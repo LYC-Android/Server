@@ -26,10 +26,6 @@ public class CardActivity extends BaseActivity {
     TextView mConnectStatus;
     @InjectView(R.id.card_number)
     TextView mCardNumber;
-    @InjectView(R.id.reconnect_model)
-    Button mReconnectModel;
-    @InjectView(R.id.find_card)
-    Button mFindCard;
     @InjectView(R.id.realName)
     TextView mRealName;
     @InjectView(R.id.sex)
@@ -38,8 +34,6 @@ public class CardActivity extends BaseActivity {
     TextView mAge;
     @InjectView(R.id.medicalNumber)
     TextView mMedicalNumber;
-    @InjectView(R.id.send_request)
-    Button mSendRequest;
     private ConnectTask connectTask;
     private ControlTask controlTask;
     private Handler mHandler=new Handler(Looper.getMainLooper());
@@ -51,7 +45,6 @@ public class CardActivity extends BaseActivity {
         initView();
         connectTask=new ConnectTask(mConnectStatus);
         connectTask.execute();
-//        startService(new Intent(CardActivity.this,TCPService.class));
     }
 
     private void initView() {
@@ -123,9 +116,4 @@ public class CardActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        stopService(new Intent(CardActivity.this, TCPService.class));
-    }
 }
