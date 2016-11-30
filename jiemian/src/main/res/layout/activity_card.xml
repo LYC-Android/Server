@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:translationZ="20dp"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="600dp"
+        android:layout_height="500dp"
+        android:layout_gravity="center"
+        android:background="@drawable/card_bg"
+        >
+
+        <RelativeLayout
+            android:id="@+id/connect_model"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <TextView
+                android:id="@+id/connect_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="连接模块"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                />
+
+            <LinearLayout
+                android:id="@+id/connect_linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/connect_title"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/connect_status"
+                    android:text="连接状态:成功"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/card_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="卡号:bbbasdnzm"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/connect_linear"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:background="@drawable/card_bt_bg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="重连模块"
+                    android:id="@+id/reconnect_model"
+                    />
+
+                <Button
+                    android:background="@drawable/card_bt_bg"
+                    android:layout_width="0dp"
+                    android:id="@+id/find_card"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="寻卡"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/info_model"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/connect_model">
+
+            <TextView
+                android:id="@+id/info_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="信息模块"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                />
+
+            <LinearLayout
+                android:padding="10dp"
+                android:id="@+id/info_info"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/info_title"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="姓名:"
+                        android:id="@+id/realName"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center|left"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="性别"
+                        android:id="@+id/sex"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center|left"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="年龄"
+                        android:id="@+id/age"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center|left"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="病历号"
+                        android:id="@+id/medicalNumber"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center|left"
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+         <Button
+             android:background="@drawable/card_bt_bg"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerHorizontal="true"
+             android:layout_below="@+id/info_info"
+             android:text="信息确认无误，发送请求"
+             android:id="@+id/send_request"
+             />
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
