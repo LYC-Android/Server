@@ -38,7 +38,6 @@ public class ControlTask extends AsyncTask<Void, Void, Void> {
 
 	private InputStream inputStream;
 	private OutputStream outputStream;
-    private UDPService udpService;
 
     public ControlTask(Context context, TextView infoTv, InputStream inputStream, OutputStream outputStream, String cmd,
                        String err, TextView ageTextview, TextView sexTextview, TextView realNameTextview, TextView medicalTextview, Handler handler) {
@@ -131,17 +130,6 @@ public class ControlTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (!statu){
-            udpService=new UDPService(Constant.CARD_ID,mContext,mObjectId,mHandler);
-            udpService.start();
-        }
     }
 
-    public UDPService getUdpService() {
-        return udpService;
-    }
-
-    public Boolean getStatu() {
-        return statu;
-    }
 }

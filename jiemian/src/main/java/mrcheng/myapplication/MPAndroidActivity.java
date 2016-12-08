@@ -5,9 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -22,17 +23,18 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.Socket;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.Trasmit;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import util.Constant;
+import cn.bmob.v3.BmobRealTimeData;
+import cn.bmob.v3.listener.ValueEventListener;
+import util.Caculate;
 import util.MyXFormatter;
 
 /**
@@ -46,30 +48,37 @@ public class MPAndroidActivity extends Activity {
     @InjectView(R.id.battery)
     TextView mBattery;
     private Thread drawThread;
+    BmobRealTimeData rtd = new BmobRealTimeData();
     private int index;
+    private static final String TAG = "MPAndroidActivity";
+    private int N0;
+    private float N1;
     private XAxis xl;
-    private Socket remoteSocket;
-    private ObjectInputStream objectInputStream;
     private List<Float> drawList = new ArrayList<>();
     private List<Float> TempList = new ArrayList<>();
+
     private int[] xinlv;
     private boolean Stop;
+    private ILineDataSet set;
+    private int DataComeCounter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mpandroid);
         ButterKnife.inject(this);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        WindowManager wm = (WindowManager)
+                getSystemService(Context.WINDOW_SERVICE);
+        int mScreenWidth = wm.getDefaultDisplay().getWidth();
+        int mScreenHeight = wm.getDefaultDisplay().getHeight();
+        float xdpi = getResources().getDisplayMetrics().xdpi;
+        Caculate caculate = new Caculate(xdpi, mScreenWidth, mScreenHeight);
+        N0 = caculate.getN0();
+        N1 = caculate.getN1();
+        connect();
         initView();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connect();
-            }
-        }).start();
     }
 
     /**
@@ -109,7 +118,7 @@ public class MPAndroidActivity extends Activity {
         xl.setTextSize(16);
         xl.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         xl.setAvoidFirstLastClipping(true);
-        xl.setValueFormatter(new MyXFormatter(0));
+
         YAxis leftAxis = mChart.getAxisLeft();
         //反转轴值
         leftAxis.setInverted(true);
@@ -125,67 +134,64 @@ public class MPAndroidActivity extends Activity {
      * 使用Socket进行连接
      */
     private void connect() {
-        try {
-            String ip = getIntent().getStringExtra("ip");
-            remoteSocket = new Socket(ip, Constant.TCP_PORT);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MPAndroidActivity.this, "连接成功,请耐心等待数据", Toast.LENGTH_SHORT).show();
-                }
-            });
-            objectInputStream = new ObjectInputStream(new BufferedInputStream(remoteSocket.getInputStream()));
-            Object object;
-            while ((object = objectInputStream.readObject()) != null) {
-                final Trasmit trasmit = (Trasmit) object;
-                if (!trasmit.getIsOnline()) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MPAndroidActivity.this, "该病人已取消连接", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    break;
-                }
+        rtd.start(MPAndroidActivity.this, new ValueEventListener() {
+            @Override
+            public void onConnectCompleted() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mBattery.setText("病人剩余电量 : " + trasmit.getBatteryInfo() + "%");
+                        Toast.makeText(MPAndroidActivity.this, "连接成功,请耐心等待数据", Toast.LENGTH_SHORT).show();
                     }
                 });
-                TempList.addAll(trasmit.getDatas());
-                synchronized (drawList) {
-                    if (drawList.size()!=0){
-                        drawList.wait();
-                    }
-                    drawList.addAll(TempList);
-                    TempList.clear();
-                    drawList.notify();
+                if (rtd.isConnected()) {
+                    rtd.subTableUpdate("Trasmit");
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (remoteSocket != null) {
-                    remoteSocket.close();
-                }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (objectInputStream != null) {
+            @Override
+            public void onDataChange(JSONObject jsonObject) {
                 try {
-                    objectInputStream.close();
-                } catch (IOException e) {
+                    JSONObject object = jsonObject.getJSONObject("data");
+                    if (!object.getBoolean("isOnline")) {
+                        rtd.unsubTableUpdate("Trasmit");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MPAndroidActivity.this, "该病人已经取消连接", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        Stop = true;
+                        return;
+                    }
+                    Log.d(TAG, object.getString("batteryInfo") + "");
+                    if (object.getString("batteryInfo") != null) {
+                        mBattery.setText("病人剩余电量 : " + object.getString("batteryInfo") + "%");
+                    } else {
+                        mBattery.setText("病人剩余电量 : --");
+                    }
+                    JSONArray array = object.getJSONArray("datas");
+                    for (int i = 0; i < array.length(); i++) {
+                        TempList.add((float) array.getDouble(i));
+                    }
+                    Log.d(TAG, "data come");
+                    synchronized (drawList) {
+                        Log.d(TAG, drawList.size()+"");
+                        if (drawList.size() != 0) {
+                            drawList.wait();
+                        }
+                        DataComeCounter++;
+                        drawList.addAll(TempList);
+                        TempList.clear();
+                        drawList.notify();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }
+        });
+
     }
 
 
@@ -199,55 +205,60 @@ public class MPAndroidActivity extends Activity {
                 addEntry();
             }
         };
-        drawThread =new Thread(new Runnable() {
-                @Override
-                public void run() {
+        drawThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-                    while (!Stop) {
-                        try {
-                            synchronized (drawList) {
-                                if (drawList.size() == 0) {
-                                    drawList.wait();
-                                }
-                                CaculateXinLv();
-                                index = 0;
-                                for (int i = 0; i < drawList.size(); i++) {
-                                    runOnUiThread(runnable);
-                                    try {
-                                        Thread.sleep(8000 / 1200);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                drawList.clear();
-                                drawList.notify();
+                while (!Stop) {
+                    try {
+                        synchronized (drawList) {
+                            if (drawList.size() == 0) {
+                                drawList.wait();
                             }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            CaculateXinLv();
+                            HandlerDatas();
+                            index = 0;
+                            for (int i = 0; i < drawList.size(); i++) {
+                                index = i;
+                                runOnUiThread(runnable);
+                                try {
+                                    Thread.sleep(8000 / 1200);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            while (!((set.getEntryCount()/DataComeCounter) == (drawList.size()))) {
+                            }
+                            drawList.clear();
+                            drawList.notify();
+
+                            Log.d(TAG, "have been clean");
                         }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
+            }
         });
+        xl.setValueFormatter(new MyXFormatter(0));
         drawThread.start();
     }
 
     private void addEntry() {
         LineData data = mChart.getData();
         if (data != null) {
-            ILineDataSet set = data.getDataSetByIndex(0);
+            set = data.getDataSetByIndex(0);
             if (set == null) {
                 set = createSet();
                 data.addDataSet(set);
             }
-            data.addEntry(new Entry(set.getEntryCount(),(drawList.get(index) + 0f)), 0);
+            data.addEntry(new Entry(set.getEntryCount(), (drawList.get(index) + 0f)), 0);
             data.notifyDataChanged();
             mChart.notifyDataSetChanged();
             mChart.setVisibleXRangeMaximum(1200);
             mChart.setVisibleXRangeMinimum(1200);
             mChart.moveViewToX(data.getEntryCount());
-            index++;
-            if (index % 150 == 0) {
+            if (index % 150 == 0&&index>0) {
                 mXinlv.setText(xinlv[(index / 150) - 1] + "/min");
             }
         }
@@ -309,6 +320,7 @@ public class MPAndroidActivity extends Activity {
             }
         }
 
+
         int[] result1 = new int[dianshu.size() - 1];
         for (int i = 0; i < dianshu.size() - 1; i++) {
             result1[i] = dianshu.get(i + 1) - dianshu.get(i);
@@ -350,7 +362,7 @@ public class MPAndroidActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         setResult(RESULT_OK);
-                        Stop=true;
+                        Stop = true;
                         finish();
                     }
                 });
@@ -360,5 +372,45 @@ public class MPAndroidActivity extends Activity {
                     }
                 });
         return builder.create();
+    }
+
+
+    private void HandlerDatas() {
+
+        List<Float> TempDoubles = new ArrayList<>();
+        List<Float> mDoubls = new ArrayList<>();
+        List<Float> Result = new ArrayList<>();
+
+        for (int i = 0; i < drawList.size(); i++) {
+            TempDoubles.add(drawList.get(i));
+            if (TempDoubles.size() >= drawList.size() / 8) {//Modified 每8秒的数据量为500*8=4000，要画出150*8=1200点
+                for (int h = 0; h < TempDoubles.size(); h++) {
+                    mDoubls.add(TempDoubles.get(h));
+                    if (h > 0 && h % 5 == 0) {//Modified 每5点插值一次使得8秒数据量达到4800点
+                        mDoubls.add((TempDoubles.get(h - 1) + TempDoubles.get(h + 1)) / 2);
+                    }
+                }
+                mDoubls.add(TempDoubles.get((drawList.size() / 8) - 1));
+                for (int l = 0; l < mDoubls.size(); l++) {
+                    if (l % 4 == 0) {//Modified 然后4倍抽取使得8秒画图点数为1200点
+                        Result.add((N0 - (float) (mDoubls.get(l) * N1)));
+                    }
+                }
+                mDoubls.clear();
+                TempDoubles.clear();
+            }
+        }
+        Log.d(TAG, "clear");
+        drawList.clear();
+        drawList.addAll(Result);
+        Log.d(TAG, drawList.size()+":size");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        }
     }
 }

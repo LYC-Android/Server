@@ -93,7 +93,10 @@
         <category android:name="android.intent.category.LAUNCHER"/>
     </intent-filter>
 </activity>
-        <activity android:name=".MPAndroidActivity"/>
+        <activity android:name=".MPAndroidActivity"
+                  android:screenOrientation="landscape"
+                  android:configChanges="orientation|keyboardHidden"
+            ></activity>
         <meta-data
             android:name="Bmob_APP_KEY"
             android:value="b3c8f52b529e93d5b79c15eb51389c80"/>
