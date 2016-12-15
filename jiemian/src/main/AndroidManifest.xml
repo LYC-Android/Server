@@ -1,105 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="mrcheng.myapplication"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="mrcheng.myapplication" >
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <!--获取GSM（2g）、WCDMA（联通3g）等网络状态的信息  -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!--保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <!--允许读取手机状态 用于创建BmobInstallation-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 允许读取手机状态 用于创建BmobInstallation -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name="util.BmobIMApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-
+        android:theme="@style/AppTheme" >
+        <activity android:name=".MainActivity" >
         </activity>
         <activity
             android:name=".ChatActivity"
-            android:screenOrientation="portrait"
-            >
-
-
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Translucent"
-            />
+            android:theme="@style/Translucent" />
         <activity
             android:name=".InformationActivity"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DownloadActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.DesignDemo"
-            >
-
+            android:theme="@style/Base.Theme.DesignDemo" >
         </activity>
         <activity
             android:name=".CardActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyTranslucent"
-            ></activity>
+            android:theme="@style/MyTranslucent" />
         <activity
             android:name=".DetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/LYC.detail"
-            ></activity>
+            android:theme="@style/LYC.detail" />
         <activity
             android:name=".Bmob_ChatActivity"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
         <!-- bmobim start -->
-        <receiver android:name="cn.bmob.newim.core.ConnectChangeReceiver">
+        <receiver android:name="cn.bmob.newim.core.ConnectChangeReceiver" >
             <intent-filter>
-                <action android:name="cn.bmob.action.RECONNECT"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="cn.bmob.action.RECONNECT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
 
         <service
             android:name="cn.bmob.newim.core.service.BmobIMService"
-            android:process=":bmobcore"/>
+            android:process=":bmobcore" />
         <service
             android:name="cn.bmob.newim.core.service.NotifyService"
-            android:process=":bmobcore"/>
-        <service android:name="cn.bmob.newim.core.service.ReConnectService"/>
-        <service android:name="cn.bmob.newim.core.service.HeartBeatService"/>
-<activity android:name=".LuancherActivity">
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
+            android:process=":bmobcore" />
+        <service android:name="cn.bmob.newim.core.service.ReConnectService" />
+        <service android:name="cn.bmob.newim.core.service.HeartBeatService" />
 
-        <category android:name="android.intent.category.LAUNCHER"/>
-    </intent-filter>
-</activity>
-        <activity android:name=".MPAndroidActivity"
-                  android:screenOrientation="landscape"
-                  android:configChanges="orientation|keyboardHidden"
-            ></activity>
+        <activity android:name=".LuancherActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MPAndroidActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@style/MPA" />
+
         <meta-data
             android:name="Bmob_APP_KEY"
-            android:value="b3c8f52b529e93d5b79c15eb51389c80"/>
+            android:value="b3c8f52b529e93d5b79c15eb51389c80" />
+
+        <activity android:name=".BingLiActivity" >
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".HistoryActivity" >
+        </activity>
+        <activity android:name=".History_DetailActivity" >
+        </activity>
+        <activity android:name=".OutLineActivity"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:screenOrientation="landscape"
+                  android:theme="@style/MPA"
+            >
+        </activity>
     </application>
 
 </manifest>

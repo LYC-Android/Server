@@ -44,6 +44,7 @@ public class NoDownloadAdapater extends RecyclerView.Adapter<NoDownloadAdapater.
                 Intent intent = new Intent(mContext, DetailActivity.class);
                 intent.putExtra("title",mdatas.get(position).getAuthor().getRealName());
                 intent.putExtra("ObjectId",mdatas.get(position).getObjectId());
+                intent.putExtra("UserId", mdatas.get(position).getAuthor().getObjectId());
                 mContext.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity)mContext).toBundle());
             }
         });

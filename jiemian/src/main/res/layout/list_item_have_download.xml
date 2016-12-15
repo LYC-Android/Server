@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:id="@+id/cv"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:id="@+id/cv"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="8dp">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/name"
-        android:textSize="20sp"
-        android:layout_marginLeft="10dp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:id="@+id/time"
-        android:layout_gravity="center"
-        android:textStyle="bold"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="查看"
-        android:background="@drawable/subit_button"
-        android:id="@+id/look"
-        android:textSize="20sp"
-        />
-    <Button
 
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="删除"
-        android:background="@drawable/subit_button"
-        android:id="@+id/delete"
-        android:textSize="20sp"
-        />
-</LinearLayout>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/look"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/subit_button"
+            android:text="查看"
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/baogao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/subit_button"
+            android:text="报告"
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/subit_button"
+            android:text="删除"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
 
 
 </android.support.v7.widget.CardView>

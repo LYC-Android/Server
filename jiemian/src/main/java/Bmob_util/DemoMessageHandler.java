@@ -1,33 +1,18 @@
 package Bmob_util;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import bean.DialogWrapper;
-import bean.Request;
-import bean.Resopnse;
-import cn.bmob.newim.BmobIM;
-import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMMessage;
 import cn.bmob.newim.bean.BmobIMMessageType;
-import cn.bmob.newim.bean.BmobIMUserInfo;
-import cn.bmob.newim.core.BmobIMClient;
 import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.event.OfflineMessageEvent;
 import cn.bmob.newim.listener.BmobIMMessageHandler;
-import cn.bmob.newim.listener.MessageSendListener;
-import cn.bmob.v3.exception.BmobException;
-import mrcheng.myapplication.MainActivity;
-import util.BaseActivity;
 
 /**
  * Created by mr.cheng on 2016/9/19.

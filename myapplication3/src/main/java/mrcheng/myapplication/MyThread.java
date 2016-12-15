@@ -336,8 +336,8 @@ public class MyThread extends SurfaceView implements Runnable,SurfaceHolder.Call
     private void initReader(String filename) {
         this.filename = filename;  //获得用户名
         try {
-            fis = new FileInputStream(this.filename);
-            bis = new BufferedInputStream(fis);
+//            fis = new FileInputStream(this.filename);
+            bis = new BufferedInputStream(mContext.getResources().openRawResource(R.raw.fmsignal));
 
             this.chunkdescriptor = readString(lenchunkdescriptor);
             if (!chunkdescriptor.endsWith("RIFF"))  //0~3检查前四个字节是否为RIFF

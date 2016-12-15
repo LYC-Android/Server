@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.transition.Explode;
 import android.transition.Transition;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -63,6 +64,10 @@ public class InformationActivity extends BaseActivity {
         getWindow().setExitTransition(new Explode());
         MakeProgress();
         setTitle("个人信息");
+        android.support.v7.app.ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
         getInformation();
     }
 
@@ -121,7 +126,7 @@ public class InformationActivity extends BaseActivity {
 
     private void getInformation() {
 
-        MyUser myUser = BmobUser.getCurrentUser(InformationActivity.this,MyUser.class);
+        MyUser myUser = BmobUser.getCurrentUser(InformationActivity.this, MyUser.class);
         BmobQuery<MyUser> query = new BmobQuery<>();
         query.addWhereEqualTo("username", myUser.getUsername());
         query.addQueryKeys("username,mobilePhoneNumber,realName,isBoys,medicalNumber,hospital,zhicheng");
@@ -132,40 +137,40 @@ public class InformationActivity extends BaseActivity {
                     progressDialog.dismiss();
                     ActivityCollector.LingYiFlag = true;
                 }
-                    if (list.get(0).getRealName() != null) {
-                        mUsername.setText(list.get(0).getRealName());
-                    }
+                if (list.get(0).getRealName() != null) {
+                    mUsername.setText(list.get(0).getRealName());
+                }
 
-                    if (list.get(0).getIsBoys() != null) {
-                        if (list.get(0).getIsBoys()) {
-                            mBoy.setChecked(true);
-                        } else {
-                            mGirl.setChecked(true);
-                            mBoy.setChecked(false);
-                        }
+                if (list.get(0).getIsBoys() != null) {
+                    if (list.get(0).getIsBoys()) {
+                        mBoy.setChecked(true);
+                    } else {
+                        mGirl.setChecked(true);
+                        mBoy.setChecked(false);
                     }
-                    if (list.get(0).getMobilePhoneNumber() != null) {
-                        mPhoneNumeber.setText(list.get(0).getMobilePhoneNumber());
+                }
+                if (list.get(0).getMobilePhoneNumber() != null) {
+                    mPhoneNumeber.setText(list.get(0).getMobilePhoneNumber());
+                }
+                if (list.get(0).getHospital() != null) {
+                    mHosiptal.setText(list.get(0).getHospital());
+                }
+                if (list.get(0).getZhicheng() != null) {
+                    switch (list.get(0).getZhicheng()) {
+                        case "1":
+                            mYishi.setChecked(true);
+                            break;
+                        case "2":
+                            mZhuzhiyishi.setChecked(true);
+                            break;
+                        case "3":
+                            mFuzhuren.setChecked(true);
+                            break;
+                        case "4":
+                            mZhuren.setChecked(true);
+                            break;
                     }
-                    if (list.get(0).getHospital() != null) {
-                        mHosiptal.setText(list.get(0).getHospital());
-                    }
-                    if (list.get(0).getZhicheng() != null) {
-                        switch (list.get(0).getZhicheng()) {
-                            case "1":
-                                mYishi.setChecked(true);
-                                break;
-                            case "2":
-                                mZhuzhiyishi.setChecked(true);
-                                break;
-                            case "3":
-                                mFuzhuren.setChecked(true);
-                                break;
-                            case "4":
-                                mZhuren.setChecked(true);
-                                break;
-                        }
-                    }
+                }
 
 
             }
@@ -295,5 +300,16 @@ public class InformationActivity extends BaseActivity {
                 MyUpdateInfo();
                 break;
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

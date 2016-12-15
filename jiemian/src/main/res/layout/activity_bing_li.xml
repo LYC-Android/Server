@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:padding="20dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="南方医院心电图报告单"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="姓名:老李"
+                android:textSize="20sp"
+                android:id="@+id/Realname"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="年龄:16"
+                android:textSize="20sp"
+                android:id="@+id/age"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="性别:男"
+                android:id="@+id/sex"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="科室:心电科"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:id="@+id/createtime"
+                android:text="检查日期:2016.12.13"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:background="@drawable/baogao_bg"
+            android:elevation="0dp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="心电图诊断:"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/baogao_child"
+                android:enabled="true"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:minLines="4"
+                android:id="@+id/report"
+                android:scrollbars="vertical"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="心电图特征:"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/xinlv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:text="心率:窦性心率 67/min"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/RR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:text="心动周期(R-R): 0.895秒"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/QRS"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:text="QRS时限:0.075秒"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="心电图诊断意见:"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="horizontal"
+                >
+
+
+                <CheckBox
+                    android:checked="true"
+                    android:id="@+id/xindian_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="在正常范围内"
+                    android:textSize="20sp"
+                    android:theme="@style/MyCheckStyle"
+                    />
+
+                <CheckBox
+                    android:id="@+id/xindian_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:hint="大致正常"
+                    android:textSize="20sp"
+                    android:theme="@style/MyCheckStyle"
+                    />
+
+                <CheckBox
+                    android:id="@+id/xindian_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:hint="可能不正常"
+                    android:textSize="20sp"
+                    android:theme="@style/MyCheckStyle"
+                    />
+
+                <CheckBox
+                    android:id="@+id/xindian_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:hint="显示不正常"
+                    android:textSize="20sp"
+                    android:theme="@style/MyCheckStyle"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/commit_time"
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right|center"
+                android:text="报告医生:张医生    报告时间:2016.12.13"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+    <Button
+        android:id="@+id/bt_submit"
+        android:background="@drawable/bt_shape"
+        android:stateListAnimator="@drawable/state_list_animator_z"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:textSize="25sp"
+        android:text="提交"
+        android:layout_gravity="center"
+        android:textColor="#ff0033"
+        >
+    </Button>
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        app:indicatorColor="#FF0033"
+        android:id="@+id/progress"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        app:indicatorName="BallClipRotateIndicator"
+        style="AVLoadingIndicatorView.Large"
+        />
+    </LinearLayout>
+
+

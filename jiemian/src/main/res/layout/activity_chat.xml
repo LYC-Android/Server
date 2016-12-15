@@ -35,6 +35,15 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp">
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/history"
+            fab:fab_icon="@drawable/ic_assignment_white_48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="#FFFF33"
+            fab:fab_title="历史报告"
+            fab:fab_addButtonSize="normal"
+            fab:fab_colorPressed="#FFFF33"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/readcard"
             fab:fab_icon="@drawable/readcard"
             android:layout_width="wrap_content"
@@ -109,4 +118,9 @@
             android:background="@drawable/subit_button"
             />
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/test"
+        />
 </android.support.design.widget.CoordinatorLayout>

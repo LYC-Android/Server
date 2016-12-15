@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            app:cpb_textComplete="已完成"
+            app:cpb_textComplete="查看"
             app:cpb_textError="错误"
             app:cpb_textIdle="未下载"
             app:cpb_cornerRadius="48dp"

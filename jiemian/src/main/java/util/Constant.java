@@ -10,7 +10,7 @@ public class Constant {
     public static final String FIND_CARD_CMD="aa bb 06 00 00 00 01 02 52 51";
     public static final String READ_CARD_ERROR="AA BB 06 00 00 00 02 02 0A 0A";
     //IP地址
-    public static String IP="192.168.0.109";
+    public static String IP="192.168.1.109";
     //端口
     public static int port=4001;
 }

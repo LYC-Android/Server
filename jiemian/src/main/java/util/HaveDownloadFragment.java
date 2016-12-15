@@ -54,6 +54,7 @@ public class HaveDownloadFragment extends Fragment {
     }
 
     private void getInformation() {
+        mDatas.clear();
         mDatas.addAll(DataSupport.findAll(File_Message.class));
         mProgress.hide();
         mAdapter.notifyDataSetChanged();

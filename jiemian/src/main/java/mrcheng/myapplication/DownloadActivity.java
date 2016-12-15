@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
@@ -54,8 +55,11 @@ public class DownloadActivity extends BaseActivity {
         ShowEnterAnimation();
         setTitle("离线下载");
         setSupportActionBar(mToolbar);
+        android.support.v7.app.ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
         initViewPager();
-        SQLiteDatabase db = Connector.getDatabase();
     }
 
     private void ShowEnterAnimation() {
@@ -157,5 +161,18 @@ public class DownloadActivity extends BaseActivity {
             }
         });
         mAnimator.start();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

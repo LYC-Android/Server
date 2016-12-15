@@ -11,6 +11,33 @@ public class File_Message extends DataSupport {
     private String number;
     private String name;
     private int id;
+    private boolean haveReport;
+    private String ReportId;
+    private String userObjectId;
+
+    public String getUserObjectId() {
+        return userObjectId;
+    }
+
+    public void setUserObjectId(String userObjectId) {
+        this.userObjectId = userObjectId;
+    }
+
+    public boolean isHaveReport() {
+        return haveReport;
+    }
+
+    public void setHaveReport(boolean haveReport) {
+        this.haveReport = haveReport;
+    }
+
+    public String getReportId() {
+        return ReportId;
+    }
+
+    public void setReportId(String reportId) {
+        ReportId = reportId;
+    }
 
     public int getId() {
         return id;

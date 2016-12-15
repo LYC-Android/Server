@@ -12,6 +12,7 @@ public class DowmloadTable extends BmobObject {
     private List<String> times;
     private List<String> urls;
 
+
     public MyUser getAuthor() {
         return author;
     }

@@ -35,6 +35,7 @@ public class ControlTask extends AsyncTask<Void, Void, Void> {
 	private byte[] read_buff;
 	private String readStr;
     private String mObjectId;
+    private String mUsername;
 
 	private InputStream inputStream;
 	private OutputStream outputStream;
@@ -74,6 +75,7 @@ public class ControlTask extends AsyncTask<Void, Void, Void> {
                            mSex.setText("性别:"+mList.get(0).getSex());
                            mMedicalNumber.setText("病历号:"+mList.get(0).getMedicalNumber());
                            mObjectId=mList.get(0).getObjectId();
+                           mUsername = mList.get(0).getUsername();
                        }else {
                            mRealName.setText("姓名:--");
                            mAge.setText("年龄:--");
@@ -132,4 +134,11 @@ public class ControlTask extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
     }
 
+    public String getObjectId() {
+        return mObjectId;
+    }
+
+    public String getUsername() {
+        return mUsername;
+    }
 }

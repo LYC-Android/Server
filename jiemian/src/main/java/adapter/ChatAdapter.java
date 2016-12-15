@@ -1,8 +1,6 @@
 package adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +10,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import bean.MyUser;
-import bean.Sicker;
-import mrcheng.myapplication.ChatActivity;
-import mrcheng.myapplication.MainActivity;
 import mrcheng.myapplication.R;
 
 /**

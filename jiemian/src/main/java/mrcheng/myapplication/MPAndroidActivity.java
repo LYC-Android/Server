@@ -32,6 +32,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.listener.ValueEventListener;
 import util.Caculate;
@@ -47,6 +48,10 @@ public class MPAndroidActivity extends Activity {
     TextView mXinlv;
     @InjectView(R.id.battery)
     TextView mBattery;
+    @InjectView(R.id.realName)
+    TextView mRealName;
+    @InjectView(R.id.age)
+    TextView mAge;
     private Thread drawThread;
     BmobRealTimeData rtd = new BmobRealTimeData();
     private int index;
@@ -56,11 +61,10 @@ public class MPAndroidActivity extends Activity {
     private XAxis xl;
     private List<Float> drawList = new ArrayList<>();
     private List<Float> TempList = new ArrayList<>();
-
     private int[] xinlv;
     private boolean Stop;
     private ILineDataSet set;
-    private int DataComeCounter=0;
+    private int DataComeCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +118,7 @@ public class MPAndroidActivity extends Activity {
         xl = mChart.getXAxis();
         xl.setDrawGridLines(false);
         xl.setGranularity(1f);
-        xl.setLabelCount(8, true);
+        xl.setLabelCount(9, true);
         xl.setTextSize(16);
         xl.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         xl.setAvoidFirstLastClipping(true);
@@ -163,7 +167,6 @@ public class MPAndroidActivity extends Activity {
                         Stop = true;
                         return;
                     }
-                    Log.d(TAG, object.getString("batteryInfo") + "");
                     if (object.getString("batteryInfo") != null) {
                         mBattery.setText("病人剩余电量 : " + object.getString("batteryInfo") + "%");
                     } else {
@@ -173,15 +176,14 @@ public class MPAndroidActivity extends Activity {
                     for (int i = 0; i < array.length(); i++) {
                         TempList.add((float) array.getDouble(i));
                     }
-                    Log.d(TAG, "data come");
                     synchronized (drawList) {
-                        Log.d(TAG, drawList.size()+"");
+                        Log.d(TAG, drawList.size() + "");
                         if (drawList.size() != 0) {
                             drawList.wait();
                         }
-                        DataComeCounter++;
                         drawList.addAll(TempList);
                         TempList.clear();
+                        DataComeCounter = DataComeCounter + drawList.size();
                         drawList.notify();
                     }
                 } catch (JSONException e) {
@@ -227,12 +229,12 @@ public class MPAndroidActivity extends Activity {
                                     e.printStackTrace();
                                 }
                             }
-                            while (!((set.getEntryCount()/DataComeCounter) == (drawList.size()))) {
+                            while (!((set.getEntryCount()) == DataComeCounter)) {
                             }
                             drawList.clear();
                             drawList.notify();
 
-                            Log.d(TAG, "have been clean");
+
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -258,16 +260,15 @@ public class MPAndroidActivity extends Activity {
             mChart.setVisibleXRangeMaximum(1200);
             mChart.setVisibleXRangeMinimum(1200);
             mChart.moveViewToX(data.getEntryCount());
-            if (index % 150 == 0&&index>0) {
-                mXinlv.setText(xinlv[(index / 150) - 1] + "/min");
+            if (index % 150 == 0 && index > 0) {
+                mXinlv.setText("心率:" + xinlv[(index / 150) - 1] + "/min");
             }
         }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
+    protected void onStop() {
+        super.onStop();
         if (drawThread != null) {
             drawThread.interrupt();
         }
@@ -356,7 +357,7 @@ public class MPAndroidActivity extends Activity {
      */
     private Dialog ExitDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("系统信息");
+        builder.setTitle("提示");
         builder.setMessage("确定要退出吗?");
         builder.setPositiveButton("确定",
                 new DialogInterface.OnClickListener() {
@@ -400,10 +401,8 @@ public class MPAndroidActivity extends Activity {
                 TempDoubles.clear();
             }
         }
-        Log.d(TAG, "clear");
         drawList.clear();
         drawList.addAll(Result);
-        Log.d(TAG, drawList.size()+":size");
     }
 
     @Override
@@ -412,5 +411,27 @@ public class MPAndroidActivity extends Activity {
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
         }
+    }
+
+    @OnClick(R.id.commit)
+    public void onClick() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MPAndroidActivity.this);
+        dialog.setTitle("提示");
+        dialog.setMessage("结束此次心电传输，并填写诊断报告吗?");
+        dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setResult(RESULT_OK);
+                Stop = true;
+                finish();
+            }
+        });
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        dialog.show();
     }
 }

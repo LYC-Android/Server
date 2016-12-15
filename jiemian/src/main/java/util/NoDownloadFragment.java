@@ -57,7 +57,7 @@ public class NoDownloadFragment extends Fragment {
     private void getInformation() {
         BmobQuery<DowmloadTable> query = new BmobQuery<DowmloadTable>();
         query.addQueryKeys("author");
-        query.include("author[realName|medicalNumber]");
+        query.include("author[realName|medicalNumber|objcetId]");
         query.findObjects(getActivity(), new FindListener<DowmloadTable>() {
             @Override
             public void onSuccess(List<DowmloadTable> list) {

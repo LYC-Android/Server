@@ -82,11 +82,7 @@ public class ChatActivity extends BaseActivity {
         getWindow().setEnterTransition(explode);
         setTitle("病人列表");
         final MyUser myUser = BmobUser.getCurrentUser(ChatActivity.this, MyUser.class);
-//        if (myUser == null) {
-//            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
-//            finish();
-//            return;
-//        }
+
         initView();
         connect(myUser);
 
@@ -216,15 +212,20 @@ public class ChatActivity extends BaseActivity {
         } else {
             info.setMedicalNumber("未填写");
         }
-         if (list.get(i).getCardNumber()!=null){
-             info.setCardNumber(list.get(i).getCardNumber());
-         }else {
-             info.setCardNumber("未填写");
-         }
+        if (list.get(i).getCardNumber() != null) {
+            info.setCardNumber(list.get(i).getCardNumber());
+        } else {
+            info.setCardNumber("未填写");
+        }
+        if (list.get(i).getUsername() != null) {
+            info.setUsername(list.get(i).getUsername());
+        } else {
+            info.setUsername("未填写");
+        }
         info.save();
     }
 
-    @OnClick({R.id.download, R.id.setting, R.id.out, R.id.bt_reconnect ,R.id.readcard})
+    @OnClick({R.id.download, R.id.setting, R.id.out, R.id.bt_reconnect, R.id.readcard,R.id.history})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.download:
@@ -246,6 +247,10 @@ public class ChatActivity extends BaseActivity {
             case R.id.readcard:
                 Intent intent3 = new Intent(ChatActivity.this, CardActivity.class);
                 startActivity(intent3);
+                break;
+            case R.id.history:
+                Intent intent4 = new Intent(ChatActivity.this, HistoryActivity.class);
+                startActivity(intent4, ActivityOptions.makeSceneTransitionAnimation(ChatActivity.this).toBundle());
                 break;
         }
     }
@@ -390,6 +395,16 @@ public class ChatActivity extends BaseActivity {
             }
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @OnClick(R.id.test)
+    public void onClick() {
+        Intent intent = new Intent(ChatActivity.this, BingLiActivity.class);
+        intent.putExtra("objectId","fd609a48e9");
+        intent.putExtra("xinlv", "79");
+        intent.putExtra("RR", "1");
+        intent.putExtra("QRS", "0.875");
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ChatActivity.this).toBundle());
     }
 
 //    private void query() {

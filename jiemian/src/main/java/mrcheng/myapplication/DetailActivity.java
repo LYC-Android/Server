@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
@@ -45,9 +46,13 @@ public class DetailActivity extends BaseActivity {
         title = intent.getStringExtra("title");
         String objectid = intent.getStringExtra("ObjectId");
         setTitle(title + "的历史心电");
+        android.support.v7.app.ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
         times = new ArrayList<>();
         urls = new ArrayList<>();
-        mAdapter = new DetailAdapter(DetailActivity.this, title, times, urls);
+        mAdapter = new DetailAdapter(DetailActivity.this, title, times, urls,getIntent().getStringExtra("UserId"));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
         getInformation(objectid);
@@ -75,5 +80,16 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

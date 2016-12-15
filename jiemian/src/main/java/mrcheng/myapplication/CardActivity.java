@@ -39,7 +39,7 @@ import util.Constant;
 /**
  * Created by mr.cheng on 2016/10/24.
  */
-public class CardActivity extends BaseActivity implements MessageListHandler{
+public class CardActivity extends BaseActivity implements MessageListHandler {
     @InjectView(R.id.connect_status)
     TextView mConnectStatus;
     @InjectView(R.id.card_number)
@@ -87,6 +87,16 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
                 findcard();
                 break;
             case R.id.send_request:
+                if (controlTask == null) {
+                    Toast.makeText(CardActivity.this, "请先查询", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (controlTask.getUsername() != null && controlTask.getObjectId() != null) {
+                        TestMehod(controlTask.getObjectId(), controlTask.getUsername());
+                    } else {
+                        Toast.makeText(CardActivity.this, "查无此人", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
                 break;
         }
     }
@@ -131,13 +141,13 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
 
     @OnClick(R.id.test)
     public void onClick() {
-        TestMehod();
+        TestMehod("", "");
     }
 
-    private void TestMehod() {
+    private void TestMehod(String objectId, String username) {
         MyUser myUser = new MyUser();
-        myUser.setObjectId("fd609a48e9");
-        myUser.setUsername("123");
+        myUser.setObjectId(objectId);
+        myUser.setUsername(username);
 
         emptyConversation ee = new emptyConversation(myUser);
         BmobIMUserInfo info = ee.getInfo();
@@ -153,9 +163,9 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
             @Override
             public void done(BmobIMMessage bmobIMMessage, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(CardActivity.this, "成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardActivity.this, "发送请求成功", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(CardActivity.this, "失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardActivity.this, "发送请求失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -166,10 +176,10 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
         switch (requestCode) {
             case XINDIAN_CODE:
                 if (resultCode == RESULT_OK) {
-                    Resopnse resopnse=new Resopnse();
+                    Resopnse resopnse = new Resopnse();
                     resopnse.setContent("1");
-                    Map<String,Object> map=new HashMap<>();
-                    map.put("cancle",true);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("cancle", true);
                     resopnse.setExtraMap(map);
                     c.sendMessage(resopnse, new MessageSendListener() {
                         @Override
@@ -191,10 +201,11 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
             addMessage2Chat(list.get(i));
         }
     }
+
     private void addMessage2Chat(MessageEvent event) {
         BmobIMMessage msg = event.getMessage();
         if (msg.getMsgType().equals("response")) {
-            if (c != null && c.getConversationId().equals(event.getConversation().getConversationId())){
+            if (c != null && c.getConversationId().equals(event.getConversation().getConversationId())) {
                 voice(msg);
                 return;
             }
@@ -205,7 +216,7 @@ public class CardActivity extends BaseActivity implements MessageListHandler{
         Resopnse resopnse = Resopnse.convert(msg);
         if (resopnse.getReceive()) {
             Intent intent = new Intent(CardActivity.this, MPAndroidActivity.class);
-            intent.putExtra("objectId", "fd609a48e9");
+            intent.putExtra("objectId", controlTask.getObjectId());
             startActivity(intent);
         } else {
             Toast.makeText(CardActivity.this, "对方拒绝了您的请求", Toast.LENGTH_SHORT).show();
