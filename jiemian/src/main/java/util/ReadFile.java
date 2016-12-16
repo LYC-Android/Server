@@ -17,7 +17,7 @@ import mrcheng.myapplication.R;
 /**
  * Created by mr.cheng on 2016/11/22.
  */
-public class ReadFile extends Thread{
+public class ReadFile extends Thread {
     private final int N0;
     private final float N1;
     private int M;
@@ -30,6 +30,7 @@ public class ReadFile extends Thread{
     private String mPath;
     private boolean isFinish;
     private String mLock;
+    private ArrayList<Double> resultY = new ArrayList<>();
 
     @Override
     public void run() {
@@ -37,7 +38,7 @@ public class ReadFile extends Thread{
         openFile(mPath);
     }
 
-    public ReadFile(Context context, String path,String lock) {
+    public ReadFile(Context context, String path, String lock) {
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
         int mScreenWidth = wm.getDefaultDisplay().getWidth();
@@ -48,10 +49,9 @@ public class ReadFile extends Thread{
         N1 = caculate.getN1();
         M = caculate.getM();
         addNum = caculate.getAddNum();
-        mPath=path;
-        mLock=lock;
+        mPath = path;
+        mLock = lock;
     }
-
 
 
     private void openFile(String path) {
@@ -73,6 +73,7 @@ public class ReadFile extends Thread{
                         ArrayList<Double> XH = new ArrayList<>();
                         Result.clear();
                         resultX.clear();
+                        resultY.clear();
                         for (int i = 0; i < mycount; i++) {
                             mDoubls.add(TempDoubles.get(i));
                             if (mDoubls.size() >= mycount / 8) {//Modified 每8秒的数据量为500*8=4000，要画出150*8=1200点
@@ -96,7 +97,10 @@ public class ReadFile extends Thread{
                         }
                         TempDoubles.clear();
                         xinlvdatas = CaculateXinLv(XH);
-                        ValueObject.value="11";
+                        for (int i = 0; i < resultX.size(); i++) {
+                            resultY.add(Result.get(resultX.get(i)));
+                        }
+                        ValueObject.value = "11";
                         mLock.notify();
                     }
                 }
@@ -143,18 +147,18 @@ public class ReadFile extends Thread{
         }
         //存储点数的R波数组
         ArrayList<Integer> dianshuX = new ArrayList<>();
-        double threshold = (max_daoshu * 0.10);
+        double threshold = (max_daoshu * 0.19);
         for (int i = 0; i < mFloats.length - 1; i++) {
-            if (mFloats[i] > threshold && (mDaoshu[i] * mDaoshu[i + 1]) < 0) {
+            if (mFloats[i] > threshold && ((mDaoshu[i] * mDaoshu[i + 1]) < 0 || ((mDaoshu[i] * mDaoshu[i - 1]) < 0))) {
                 dianshuX.add(i);
             }
         }
-
         //计算斜线部分，局部变换法
         double[] dianshuY = new double[dianshuX.size()];
         for (int i = 0; i < dianshuY.length; i++) {
             dianshuY[i] = drawList.get(dianshuX.get(i));
         }
+
 
         CaculateQRSWave(drawList, dianshuX, dianshuY);
 
@@ -183,12 +187,38 @@ public class ReadFile extends Thread{
     private void CaculateQRSWave(ArrayList<Double> drawList, ArrayList<Integer> dianshuX, double[] dianshuY) {
         if (dianshuX.get(0) < 13) {
             //第一个点小于40的时候，忽略第一个点
-            //****************************************
+            resultX.add(dianshuX.get(0));
+            double firstBack15Y = drawList.get(dianshuX.get(0) + 14);
+            double firstTan = (dianshuY[0] - firstBack15Y) / 15;
+            double[] firstBackTempDouble = new double[13];
+            for (int j = 0; j < 13; j++) {
+                firstBackTempDouble[j] = Math.abs((firstTan * (13 - j)) + firstBack15Y - drawList.get(dianshuX.get(0) + j + 1));
+            }
+            int firtMaxIndex = 0;
+            double firstMax = firstBackTempDouble[0];
+            for (int h = 0; h < firstBackTempDouble.length - 1; h++) {
+                if (firstMax < firstBackTempDouble[h + 1]) {
+                    firstMax = firstBackTempDouble[h + 1];
+                    firtMaxIndex = h + 1;
+                }
+            }
+            int FirstbackTempXresult = dianshuX.get(0) + firtMaxIndex;
+
+            int FirstsecondIndex = 0;
+            double FirstsecondMin = Math.abs(drawList.get(FirstbackTempXresult + 1) - drawList.get(FirstbackTempXresult + 2));
+            for (int j = 0; j < 13 - firtMaxIndex; j++) {
+                if (FirstsecondMin > (Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3)))) {
+                    FirstsecondIndex  = j + 1;
+                    FirstsecondMin= Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3));
+                }
+            }
+            resultX.add(FirstbackTempXresult+ FirstsecondIndex  + 1);
+            //*************************
             double[] foward13Y = new double[dianshuX.size() - 1];
             for (int i = 1; i < dianshuX.size(); i++) {
                 foward13Y[i - 1] = drawList.get(dianshuX.get(i) - 12);
             }
-            for (int i = 0; i < foward13Y.length; i++) {
+            for (int i = 1; i < foward13Y.length+1; i++) {
                 double tan = (dianshuY[i] - foward13Y[i]) / 12;
                 double[] tempResult = new double[11];
                 for (int j = 0; j < 11; j++) {
@@ -203,7 +233,6 @@ public class ReadFile extends Thread{
                         MaxIndex = h + 1;
                     }
                 }
-
                 int tempXresult = dianshuX.get(i) - 11 + MaxIndex;
 
                 int secondIndex = 0;
@@ -215,6 +244,37 @@ public class ReadFile extends Thread{
                     }
                 }
                 resultX.add(tempXresult - secondIndex - 1);
+                //加上顶点
+                resultX.add(dianshuX.get(i));
+                //算完第一个点之后应该算的是后面的15个点。
+                if (dianshuX.get(i) <= 1185) {
+                    double back15Y = drawList.get(dianshuX.get(i) + 14);
+                    tan = (dianshuY[i] - back15Y) / 15;
+                    double[] backTempDouble = new double[13];
+                    for (int j = 0; j < 13; j++) {
+                        backTempDouble[j] = Math.abs((tan * (13 - j)) + back15Y - drawList.get(dianshuX.get(i) + j + 1));
+                    }
+
+                    MaxIndex = 0;
+                    max = backTempDouble[0];
+                    for (int h = 0; h < backTempDouble.length - 1; h++) {
+                        if (max < backTempDouble[h + 1]) {
+                            max = backTempDouble[h + 1];
+                            MaxIndex = h + 1;
+                        }
+                    }
+                    int backTempXresult = dianshuX.get(i) + MaxIndex;
+
+                    secondIndex = 0;
+                    secondMin = Math.abs(drawList.get(backTempXresult + 1) - drawList.get(backTempXresult + 2));
+                    for (int j = 0; j < 13 - MaxIndex; j++) {
+                        if (secondMin > (Math.abs(drawList.get(backTempXresult + j + 2) - drawList.get(backTempXresult + j + 3)))) {
+                            secondIndex = j + 1;
+                            secondMin = Math.abs(drawList.get(backTempXresult + j + 2) - drawList.get(backTempXresult + j + 3));
+                        }
+                    }
+                    resultX.add(backTempXresult + secondIndex + 1);
+                }
             }
         } else {
             //***********************************************
@@ -299,5 +359,7 @@ public class ReadFile extends Thread{
         return isFinish;
     }
 
-
+    public ArrayList<Double> getResultY() {
+        return resultY;
+    }
 }

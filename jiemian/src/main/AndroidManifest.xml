@@ -86,7 +86,9 @@
             android:name=".MPAndroidActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"
-            android:theme="@style/MPA" />
+            android:theme="@style/MPA" >
+
+        </activity>
 
         <meta-data
             android:name="Bmob_APP_KEY"

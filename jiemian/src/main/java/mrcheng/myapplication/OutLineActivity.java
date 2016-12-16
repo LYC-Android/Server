@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ import butterknife.OnClick;
 import util.MyXFormatter;
 import util.ReadFile;
 import util.ValueObject;
+
 //病人的objcetId
 public class OutLineActivity extends Activity {
 
@@ -53,6 +55,11 @@ public class OutLineActivity extends Activity {
     private String lock = new String("");
     private int[] xinlv;
     private String objcetdId;
+    private int avaverageXinLv;//平均心率
+    private int minXinLv;
+    private long minXinLvTime;
+    private int MaxXinLvTime;
+    private int MaxRR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,7 @@ public class OutLineActivity extends Activity {
         ButterKnife.inject(this);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        ValueObject.value = "";
 
         readFileThread = new ReadFile(OutLineActivity.this, getIntent().getStringExtra("path"), lock);
         readFileThread.start();
@@ -166,6 +173,28 @@ public class OutLineActivity extends Activity {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
+                            //计算平均心率
+                            int avaverage = 0;
+                            for (int i = 0; i <xinlv.length ; i++) {
+                                avaverage = avaverage + xinlv[i];
+                            }
+                            avaverageXinLv = (avaverageXinLv + avaverage / xinlv.length) / DrawCounter;
+
+                            //计算最小心率
+//                            int min = xinlv[0];
+//                            for (int i = 1; i < xinlv.length; i++) {
+//                                if (min > xinlv[i]) {
+//                                    min = xinlv[i];
+//                                }
+//                            }
+//                            if (DrawCounter == 1) {
+//                                minXinLv = min;
+//                                minXinLvTime=
+//                            } else {
+//
+//                            }
+                            //计算最大RR间期
+                            //......
                             ValueObject.value = "";
                             lock.notify();
                         }
@@ -201,22 +230,21 @@ public class OutLineActivity extends Activity {
             }
 
             data.addEntry(new Entry(set.getEntryCount(), (float) (readFileThread.getResult().get(index) + 0f)), 0);
-//
             if (counter < readFileThread.getResultX().size()) {
                 if (set.getEntryCount() == (readFileThread.getResultX().get(counter) + (DrawCounter - 1) * 1200)) {
+                    data.addEntry(new Entry(set.getEntryCount(), (float) (readFileThread.getResultY().get(counter) + 0f)), 1);
                     counter++;
-                    data.addEntry(new Entry(set.getEntryCount() - 1, (float) (readFileThread.getResult().get(index) + 0f)), 1);
                 }
             }
-//
+
             data.notifyDataChanged();
             mChart.notifyDataSetChanged();
             mChart.setVisibleXRangeMaximum(1200);
             mChart.setVisibleXRangeMinimum(1200);
             mChart.moveViewToX(data.getEntryCount());
             index++;
-            if (index % 150 == 0) {
-                mXinlv.setText("心率:" + xinlv[(index / 150) - 1] + "/min");
+            if (index % (1200 / xinlv.length) == 0) {
+                mXinlv.setText("心率:" + xinlv[(index / (1200 / xinlv.length)) - 1] + "/min");
             }
         }
     }
@@ -286,9 +314,9 @@ public class OutLineActivity extends Activity {
                 intent.putExtra("objectId", objcetdId);
                 intent.putExtra("RR", "0.871");
                 intent.putExtra("QRS", "0.23");
-                intent.putExtra("xinlv", "67");
+                intent.putExtra("xinlv", avaverageXinLv+"");
                 String temp = getIntent().getStringExtra("time");
-                String[] arr=temp.split("\\s+");
+                String[] arr = temp.split("\\s+");
                 intent.putExtra("time", arr[0]);
                 intent.putExtra("path", getIntent().getStringExtra("path"));
                 startActivity(intent);
@@ -322,5 +350,13 @@ public class OutLineActivity extends Activity {
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        }
     }
 }

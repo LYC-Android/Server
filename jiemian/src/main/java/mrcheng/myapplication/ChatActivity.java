@@ -54,20 +54,12 @@ import util.BaseActivity;
 public class ChatActivity extends BaseActivity {
     @InjectView(R.id.download)
     FloatingActionButton mDownload;
-    @InjectView(R.id.setting)
-    FloatingActionButton mSetting;
-    @InjectView(R.id.out)
-    FloatingActionButton mOut;
     @InjectView(R.id.online_user_list)
     RecyclerView mRecycle;
     @InjectView(R.id.progress)
     AVLoadingIndicatorView mProgress;
     @InjectView(R.id.no_user)
     LinearLayout mNoUser;
-    @InjectView(R.id.bt_reconnect)
-    Button mBtReconnect;
-    @InjectView(R.id.readcard)
-    FloatingActionButton mReadcard;
     private ArrayList<Conversation> mDatas;
     private Bmob_ConversationAdapter mAdapter;
 
@@ -396,32 +388,14 @@ public class ChatActivity extends BaseActivity {
             mAdapter.notifyDataSetChanged();
         }
     }
-
-    @OnClick(R.id.test)
-    public void onClick() {
-        Intent intent = new Intent(ChatActivity.this, BingLiActivity.class);
-        intent.putExtra("objectId","fd609a48e9");
-        intent.putExtra("xinlv", "79");
-        intent.putExtra("RR", "1");
-        intent.putExtra("QRS", "0.875");
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ChatActivity.this).toBundle());
-    }
-
-//    private void query() {
-//        List<PrivateConversation> mlist = getConversations();
-//        if (mlist.size() > 0) {
-//            for (int i = 0; i < mlist.size(); i++) {
-//                for (int j = 0; j < templist.size(); j++) {
-//                    if (templist.get(j).equals(mlist.get(i).getcId())) {
-//                        mDatas.set(j, mlist.get(i));
-//                        break;
-//                    }
-//                }
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        }
 //
+//    @OnClick(R.id.test)
+//    public void onClick() {
+//        Intent intent = new Intent(ChatActivity.this, BingLiActivity.class);
+//        intent.putExtra("objectId","fd609a48e9");
+//        intent.putExtra("xinlv", "79");
+//        intent.putExtra("RR", "1");
+//        intent.putExtra("QRS", "0.875");
+//        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ChatActivity.this).toBundle());
 //    }
-
-
 }
