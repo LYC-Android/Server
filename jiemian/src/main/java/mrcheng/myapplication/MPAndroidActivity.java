@@ -108,22 +108,22 @@ public class MPAndroidActivity extends Activity {
         addNum = caculate.getAddNum();
         M = caculate.getM();
         ValueObject.value = "";
-//        objcetdId = getIntent().getStringExtra("ObjectId");
-//        List<DatabaseInfo> databaseInfos = DataSupport.select("age", "realName")
-//                .where("objectId = ?", objcetdId).find(DatabaseInfo.class);
-//        if (databaseInfos.size() > 0) {
-//            mAge.setText("年龄:" + databaseInfos.get(0).getAge());
-//            mRealName.setText("姓名:" + databaseInfos.get(0).getRealName());
-//        } else {
-//            mAge.setText("年龄:--");
-//            mRealName.setText("姓名:--");
-//        }
-//        MyUser myUser = new MyUser();
-//        myUser.setObjectId(objcetdId);
-//        myUser.setUsername(getIntent().getStringExtra("username"));
-//        emptyConversation ee = new emptyConversation(myUser);
-//        BmobIMUserInfo info = ee.getInfo();
-//        c = BmobIMConversation.obtain(BmobIMClient.getInstance(), BmobIM.getInstance().startPrivateConversation(info, true, null));
+        objcetdId = getIntent().getStringExtra("ObjectId");
+        List<DatabaseInfo> databaseInfos = DataSupport.select("age", "realName")
+                .where("objectId = ?", objcetdId).find(DatabaseInfo.class);
+        if (databaseInfos.size() > 0) {
+            mAge.setText("年龄:" + databaseInfos.get(0).getAge());
+            mRealName.setText("姓名:" + databaseInfos.get(0).getRealName());
+        } else {
+            mAge.setText("年龄:--");
+            mRealName.setText("姓名:--");
+        }
+        MyUser myUser = new MyUser();
+        myUser.setObjectId(objcetdId);
+        myUser.setUsername(getIntent().getStringExtra("username"));
+        emptyConversation ee = new emptyConversation(myUser);
+        BmobIMUserInfo info = ee.getInfo();
+        c = BmobIMConversation.obtain(BmobIMClient.getInstance(), BmobIM.getInstance().startPrivateConversation(info, true, null));
         connect();
         initView();
     }
@@ -151,7 +151,7 @@ public class MPAndroidActivity extends Activity {
         xl.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         xl.setAvoidFirstLastClipping(true);
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setInverted(true);
+        leftAxis.setInverted(false);
         leftAxis.setEnabled(false);
         leftAxis.setAxisMinimum(0);
         leftAxis.setAxisMaximum(752f);
@@ -202,7 +202,7 @@ public class MPAndroidActivity extends Activity {
                     }
                     JSONArray array = object.getJSONArray("datas");
                     for (int i = 0; i < array.length(); i++) {
-                        TempList.add( array.getDouble(i)*-1000/1.52);
+                        TempList.add( array.getDouble(i)*1000/1.46);
                     }
 
                     //拿到4000长度的Doule
@@ -429,10 +429,19 @@ public class MPAndroidActivity extends Activity {
         }
         //存储点数的R波数组
         ArrayList<Integer> dianshuX = new ArrayList<>();
-        double threshold = (max_daoshu * 0.19);
-        for (int i = 0; i < mFloats.length - 1; i++) {
-            if (mFloats[i] > threshold && ((mDaoshu[i] * mDaoshu[i + 1])<0|| ((mDaoshu[i] * mDaoshu[i -1])<0))) {
+        double threshold = (max_daoshu * 0.12);
+        for (int i = 1; i < mFloats.length - 1; i++) {
+            if (Math.abs(mFloats[i]) > threshold && ((mDaoshu[i] * mDaoshu[i + 1]) < 0 || ((mDaoshu[i] * mDaoshu[i - 1]) < 0))) {
                 dianshuX.add(i);
+                if (dianshuX.size() > 1) {
+                    if ((dianshuX.get(dianshuX.size() - 1) - dianshuX.get(dianshuX.size() - 2)) < 10) {
+                        if (Math.abs(drawList.get(dianshuX.get(dianshuX.size() - 1))) > Math.abs(dianshuX.get(dianshuX.size() - 2))) {
+                            dianshuX.remove(dianshuX.size() - 2);
+                        } else {
+                            dianshuX.remove(dianshuX.size() - 1);
+                        }
+                    }
+                }
             }
         }
         //计算斜线部分，局部变换法
@@ -468,6 +477,7 @@ public class MPAndroidActivity extends Activity {
      */
     private void CaculateQRSWave(ArrayList<Double> drawList, ArrayList<Integer> dianshuX, double[] dianshuY) {
         if (dianshuX.get(0) < 13) {
+            //第一个点小于40的时候，忽略第一个点
             resultX.add(dianshuX.get(0));
             double firstBack15Y = drawList.get(dianshuX.get(0) + 14);
             double firstTan = (dianshuY[0] - firstBack15Y) / 15;
@@ -489,21 +499,21 @@ public class MPAndroidActivity extends Activity {
             double FirstsecondMin = Math.abs(drawList.get(FirstbackTempXresult + 1) - drawList.get(FirstbackTempXresult + 2));
             for (int j = 0; j < 13 - firtMaxIndex; j++) {
                 if (FirstsecondMin > (Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3)))) {
-                    FirstsecondIndex  = j + 1;
-                    FirstsecondMin= Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3));
+                    FirstsecondIndex = j + 1;
+                    FirstsecondMin = Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3));
                 }
             }
-            resultX.add(FirstbackTempXresult+ FirstsecondIndex  + 1);
+            resultX.add(FirstbackTempXresult + FirstsecondIndex + 1);
             //*************************
             double[] foward13Y = new double[dianshuX.size() - 1];
             for (int i = 1; i < dianshuX.size(); i++) {
-                foward13Y[i - 1] = drawList.get(dianshuX.get(i) - 12);
+                foward13Y[i-1] = drawList.get(dianshuX.get(i) - 12);
             }
-            for (int i = 1; i < foward13Y.length+1; i++) {
-                double tan = (dianshuY[i] - foward13Y[i]) / 12;
+            for (int i = 1; i < foward13Y.length; i++) {
+                double tan = (dianshuY[i] - foward13Y[i-1]) / 12;
                 double[] tempResult = new double[11];
                 for (int j = 0; j < 11; j++) {
-                    tempResult[j] = Math.abs((tan * (j + 1)) + foward13Y[i] - drawList.get(dianshuX.get(i) - 11 + j));
+                    tempResult[j] = Math.abs((tan * (j + 1)) + foward13Y[i-1] - drawList.get(dianshuX.get(i) - 11 + j));
                 }
 
                 int MaxIndex = 0;
@@ -654,8 +664,8 @@ public class MPAndroidActivity extends Activity {
                 Intent intent = new Intent(MPAndroidActivity.this, BingLiActivity.class);
                 intent.putExtra("objectId", objcetdId);
                 intent.putExtra("xinlv", "79");
-                intent.putExtra("RR", "1");
-                intent.putExtra("QRS", "0.875");
+                intent.putExtra("RR", "0.823");
+                intent.putExtra("QRS", "0.009");
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MPAndroidActivity.this).toBundle());
                 finish();
             }

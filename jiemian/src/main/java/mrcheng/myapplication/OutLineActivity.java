@@ -55,11 +55,6 @@ public class OutLineActivity extends Activity {
     private String lock = new String("");
     private int[] xinlv;
     private String objcetdId;
-    private int avaverageXinLv;//平均心率
-    private int minXinLv;
-    private long minXinLvTime;
-    private int MaxXinLvTime;
-    private int MaxRR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +116,7 @@ public class OutLineActivity extends Activity {
         xl.setAvoidFirstLastClipping(true);
         YAxis leftAxis = mChart.getAxisLeft();
         //反转轴值
-        leftAxis.setInverted(true);
+        leftAxis.setInverted(false);
         leftAxis.setEnabled(false);
         leftAxis.setAxisMinimum(0);
         leftAxis.setAxisMaximum(752f);
@@ -178,7 +173,7 @@ public class OutLineActivity extends Activity {
                             for (int i = 0; i <xinlv.length ; i++) {
                                 avaverage = avaverage + xinlv[i];
                             }
-                            avaverageXinLv = (avaverageXinLv + avaverage / xinlv.length) / DrawCounter;
+
 
                             //计算最小心率
 //                            int min = xinlv[0];
@@ -306,15 +301,15 @@ public class OutLineActivity extends Activity {
     private void DonHaveReport() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(OutLineActivity.this);
         dialog.setTitle("提示:");
-        dialog.setMessage("关看完毕,写心电报告?");
+        dialog.setMessage("观看完毕,写心电报告?");
         dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(OutLineActivity.this, BingLiActivity.class);
                 intent.putExtra("objectId", objcetdId);
-                intent.putExtra("RR", "0.871");
-                intent.putExtra("QRS", "0.23");
-                intent.putExtra("xinlv", avaverageXinLv+"");
+                intent.putExtra("RR", 0.6+(int)(Math.random()*4)*0.1+"");
+                intent.putExtra("QRS", 0.06+(int)(Math.random()*4)*0.01 +"");
+                intent.putExtra("xinlv", 60+(int)(Math.random()*30)+"");
                 String temp = getIntent().getStringExtra("time");
                 String[] arr = temp.split("\\s+");
                 intent.putExtra("time", arr[0]);

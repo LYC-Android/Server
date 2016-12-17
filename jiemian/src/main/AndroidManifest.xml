@@ -27,6 +27,11 @@
         <activity
             android:name=".ChatActivity"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -76,11 +81,7 @@
         <service android:name="cn.bmob.newim.core.service.HeartBeatService" />
 
         <activity android:name=".LuancherActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".MPAndroidActivity"

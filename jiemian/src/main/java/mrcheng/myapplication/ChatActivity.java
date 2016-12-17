@@ -74,7 +74,11 @@ public class ChatActivity extends BaseActivity {
         getWindow().setEnterTransition(explode);
         setTitle("病人列表");
         final MyUser myUser = BmobUser.getCurrentUser(ChatActivity.this, MyUser.class);
-
+        if (myUser == null) {
+            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+            finish();
+            return;
+        }
         initView();
         connect(myUser);
 

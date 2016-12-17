@@ -64,7 +64,7 @@ public class ReadFile extends Thread {
             String result;
             int mycount = 4000;
             while ((result = reader.readLine()) != null) {
-                TempDoubles.add(Double.valueOf(result));
+                TempDoubles.add(Double.valueOf(result)*1000/1.46);
                 if (TempDoubles.size() >= mycount) {
                     synchronized (mLock) {
                         if (!ValueObject.value.equals("")) {
@@ -147,10 +147,19 @@ public class ReadFile extends Thread {
         }
         //存储点数的R波数组
         ArrayList<Integer> dianshuX = new ArrayList<>();
-        double threshold = (max_daoshu * 0.19);
-        for (int i = 0; i < mFloats.length - 1; i++) {
-            if (mFloats[i] > threshold && ((mDaoshu[i] * mDaoshu[i + 1]) < 0 || ((mDaoshu[i] * mDaoshu[i - 1]) < 0))) {
+        double threshold = (max_daoshu * 0.12);
+        for (int i = 1; i < mFloats.length - 1; i++) {
+            if (Math.abs(mFloats[i]) > threshold && ((mDaoshu[i] * mDaoshu[i + 1]) < 0 || ((mDaoshu[i] * mDaoshu[i - 1]) < 0))) {
                 dianshuX.add(i);
+                if (dianshuX.size() > 1) {
+                    if ((dianshuX.get(dianshuX.size() - 1) - dianshuX.get(dianshuX.size() - 2)) < 10) {
+                        if (Math.abs(drawList.get(dianshuX.get(dianshuX.size() - 1))) > Math.abs(dianshuX.get(dianshuX.size() - 2))) {
+                            dianshuX.remove(dianshuX.size() - 2);
+                        } else {
+                            dianshuX.remove(dianshuX.size() - 1);
+                        }
+                    }
+                }
             }
         }
         //计算斜线部分，局部变换法
@@ -208,21 +217,21 @@ public class ReadFile extends Thread {
             double FirstsecondMin = Math.abs(drawList.get(FirstbackTempXresult + 1) - drawList.get(FirstbackTempXresult + 2));
             for (int j = 0; j < 13 - firtMaxIndex; j++) {
                 if (FirstsecondMin > (Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3)))) {
-                    FirstsecondIndex  = j + 1;
-                    FirstsecondMin= Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3));
+                    FirstsecondIndex = j + 1;
+                    FirstsecondMin = Math.abs(drawList.get(FirstbackTempXresult + j + 2) - drawList.get(FirstbackTempXresult + j + 3));
                 }
             }
-            resultX.add(FirstbackTempXresult+ FirstsecondIndex  + 1);
+            resultX.add(FirstbackTempXresult + FirstsecondIndex + 1);
             //*************************
             double[] foward13Y = new double[dianshuX.size() - 1];
             for (int i = 1; i < dianshuX.size(); i++) {
-                foward13Y[i - 1] = drawList.get(dianshuX.get(i) - 12);
+                foward13Y[i-1] = drawList.get(dianshuX.get(i) - 12);
             }
-            for (int i = 1; i < foward13Y.length+1; i++) {
-                double tan = (dianshuY[i] - foward13Y[i]) / 12;
+            for (int i = 1; i < foward13Y.length; i++) {
+                double tan = (dianshuY[i] - foward13Y[i-1]) / 12;
                 double[] tempResult = new double[11];
                 for (int j = 0; j < 11; j++) {
-                    tempResult[j] = Math.abs((tan * (j + 1)) + foward13Y[i] - drawList.get(dianshuX.get(i) - 11 + j));
+                    tempResult[j] = Math.abs((tan * (j + 1)) + foward13Y[i-1] - drawList.get(dianshuX.get(i) - 11 + j));
                 }
 
                 int MaxIndex = 0;

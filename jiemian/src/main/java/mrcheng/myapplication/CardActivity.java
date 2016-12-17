@@ -139,10 +139,10 @@ public class CardActivity extends BaseActivity implements MessageListHandler {
         }
     }
 
-    @OnClick(R.id.test)
-    public void onClick() {
-        TestMehod("fd609a48e9", "123");
-    }
+//    @OnClick(R.id.test)
+//    public void onClick() {
+//        TestMehod("fd609a48e9", "123");
+//    }
 
     private void TestMehod(String objectId, String username) {
         MyUser myUser = new MyUser();
@@ -216,10 +216,10 @@ public class CardActivity extends BaseActivity implements MessageListHandler {
         Resopnse resopnse = Resopnse.convert(msg);
         if (resopnse.getReceive()) {
             Intent intent = new Intent(CardActivity.this, MPAndroidActivity.class);
-            intent.putExtra("ObjectId", "fd609a48e9");
-            intent.putExtra("username", "123");
-//            intent.putExtra("objectId", controlTask.getObjectId());
-//            intent.putExtra("username", controlTask.getUsername());
+//            intent.putExtra("ObjectId", "fd609a48e9");
+//            intent.putExtra("username", "123");
+            intent.putExtra("objectId", controlTask.getObjectId());
+            intent.putExtra("username", controlTask.getUsername());
             startActivity(intent);
         } else {
             Toast.makeText(CardActivity.this, "对方拒绝了您的请求", Toast.LENGTH_SHORT).show();
